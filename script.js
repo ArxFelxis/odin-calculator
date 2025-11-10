@@ -16,13 +16,13 @@ function multiply  (a, b) {
     return a * b
 }
 
-function divide (a, b) {
-    if (a === 0 && b === 0) {
-        return "Indeterminate"
-    } else if (b === 0) {
-        return "Undefined"
-    }
-        return a / b
+function divide(a, b) {
+  if (a === 0 && b === 0) {     
+    return "Indeterminate"
+  } else if (b === 0) {        
+    return "Undefined"
+  }
+    return a / b
 }
 
 function operate(op, a, b) {
@@ -56,7 +56,6 @@ numbers.addEventListener("click", (event) => {
             currentValue += digit       
         }
         display.value = currentValue
-        console.log('currentValue now holds:', currentValue)
     }
 })
 
@@ -74,15 +73,14 @@ operators.addEventListener("click", (event) => {
         waitingForSecondNumber = true
         if (waitingForSecondNumber && previousValue !== '' && currentValue !== '') {
             const result = operate(operator, Number(previousValue), Number(currentValue))
-            display.value = result;
+            display.value = result
             previousValue = result.toString()
             } else {
             previousValue = currentValue
             }
         currentValue = ""
         operator = event.target.textContent
-        console.log('previousValue now holds:', previousValue)
-        }
+    }
 })
 
 let operator = ""
@@ -90,7 +88,7 @@ let operator = ""
 document.querySelector("#equals").addEventListener("click", () => {
     let num1 = Number(previousValue)
     let num2 = Number(currentValue)
-    let firstResult;
+    let firstResult
     
     if (operator === "+") {
         firstResult = add(num1, num2)
@@ -99,12 +97,29 @@ document.querySelector("#equals").addEventListener("click", () => {
     } else if (operator === "x") {
         firstResult = multiply(num1, num2)
     } else {
-        firstResult = divide(num1, num2)
+        firstResult = divide(num1, num2)  
     }
 
+    if (firstResult === "Indeterminate" || firstResult === "Undefined") {
+    display.value = firstResult
+    currentValue = "" 
+    previousValue = "" 
+    operator = ""
+    startNewCalculation = true 
+    waitingForSecondNumber = false
+    return 
+    }
+
+    if (Number.isInteger(firstResult)) {
+    display.value = firstResult
+    } else {
     display.value = Number(firstResult.toFixed(8))
+    }
+
     currentValue = display.value
     previousValue = ""
+    operator = ""
     startNewCalculation = true
     waitingForSecondNumber = false
 })
+
