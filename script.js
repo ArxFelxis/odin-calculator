@@ -1,122 +1,110 @@
-// DOM Elements
-
-/*
-let clear = document.querySelector("clear")
-let zero = document.querySelector("num-0")
-let one = document.querySelector("num-1")
-let two = document.querySelector("num-2")
-let three = document.querySelector("num-3")
-let four = document.querySelector("num-4")
-let five = document.querySelector("num-5")
-let six = document.querySelector("num-6")
-let seven = document.querySelector("num-7")
-let eight = document.querySelector("num-8")
-let nine = document.querySelector("num-9")
-let plus = document.querySelector("add")
-let minus = document.querySelector("subtract")
-let times = document.querySelector("multiply")
-let divide = document.querySelector("divide")
-let equals = document.querySelector("equals")
-*/
-
-let numberBtns = document.querySelector(".number-btns")
-let operatorBtns = document.querySelector(".operators")
+// Get DOM Elements
+let numbers = document.querySelector("#numbers-container")
+let operators = document.querySelector("#operators-container")
 let display = document.querySelector("#display")
 
-// Variables to store user keyed numbers and operator
-
-let firstNum
-let secondNum
-let mathOp
-
-// Basic mathematical operations 
-
-function add(a, b) {
+// Create functions for math operations 
+function add (a, b) {
     return a + b
 }
 
-function subtract(a, b) {
+function subtract (a, b) {
     return a - b
 }
 
-function divide(a, b) {
-    return a / b
-}
-
-function multiply(a, b) {
+function multiply  (a, b) {
     return a * b
 }
 
-// Calculate function 
+function divide (a, b) {
+    if (a === 0 && b === 0) {
+        return "Indeterminate"
+    } else if (b === 0) {
+        return "Undefined"
+    }
+        return a / b
+}
 
-function operate(a, b, op) {
-    if (op === "+") {
+function operate(op, a, b) {
+     if (operator === "+") {
         return add(a, b)
-    } else if (op === "-") {
-        return subtract(a-b)
-    } else if (op === "/") {
-        return divide(a, b)
-    } else {
+    } else if (operator === "-") {
+        return subtract(a, b)
+    } else if (operator === "x") {
         return multiply(a, b)
+    } else {
+        return divide(a, b)
     }
 }
 
-// Make number buttons display
+// Display current number 
+let currentValue = ""
+let waitingForSecondNumber = false
+let startNewCalculation = false
 
-numberBtns.addEventListener("click", (event) => {
-    let target = event.target
-
-    switch(target.id) {
-        case "zero":
-            display.value += 0
-            break
-        case "one":
-            display.value += 1
-            break
-        case "two":
-            display.value += 2
-            break
-        case "three":
-            display.value += 3
-            break
-        case "four":
-            display.value += 4
-            break
-        case "five":
-            display.value += 5
-            break
-        case "six":
-            display.value += 6
-            break
-        case "seven":
-            display.value += 7
-            break
-        case "eight":
-            display.value += 8
-            break
-        case "nine":
-            display.value += 9
-            break
+numbers.addEventListener("click", (event) => {
+    if (event.target.classList.contains("num-btn")) {
+        const digit = event.target.textContent
+        if (startNewCalculation) {
+        currentValue = ''           
+        startNewCalculation = false
+        }
+        if (waitingForSecondNumber) {
+            currentValue = digit      
+            waitingForSecondNumber = false
+        } else {
+            currentValue += digit       
+        }
+        display.value = currentValue
+        console.log('currentValue now holds:', currentValue)
     }
 })
 
-// Make operator buttons display
+// Create clear button functionality
+document.querySelector("#clear").addEventListener("click", () => {
+    currentValue = ""
+    display.value = ""
+})
 
-operatorBtns.addEventListener("click", (event) => {
-    let target = event.target
+// Store first number and create second number
+let previousValue = ""
 
-    switch(target.id) {
-        case "add":
-            display.value = "+"
-            break
-        case "subtract":
-            display.value = "-"
-            break
-        case "multiply":
-            display.value = "x"
-            break
-        case "divide":
-            display.value = "÷"
-            break
+operators.addEventListener("click", (event) => {
+    if (event.target.classList.contains("op-btn")) {
+        waitingForSecondNumber = true
+        if (waitingForSecondNumber && previousValue !== '' && currentValue !== '') {
+            const result = operate(operator, Number(previousValue), Number(currentValue))
+            display.value = result;
+            previousValue = result.toString()
+            } else {
+            previousValue = currentValue
+            }
+        currentValue = ""
+        operator = event.target.textContent
+        console.log('previousValue now holds:', previousValue)
+        }
+})
+
+let operator = ""
+
+document.querySelector("#equals").addEventListener("click", () => {
+    let num1 = Number(previousValue)
+    let num2 = Number(currentValue)
+    let firstResult;
+    
+    if (operator === "+") {
+        firstResult = add(num1, num2)
+    } else if (operator === "-") {
+        firstResult = subtract(num1, num2)
+    } else if (operator === "x") {
+        firstResult = multiply(num1, num2)
+    } else {
+        firstResult = divide(num1, num2)
     }
+
+    display.value = Number(firstResult.toFixed(8))
+    currentValue = display.value
+    previousValue = ""
+    startNewCalculation = true
+    waitingForSecondNumber = false
 })

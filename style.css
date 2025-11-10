@@ -1,19 +1,39 @@
 * {
     box-sizing: border-box;
-    /* margin: 0;
-    padding: 0; */
+    margin: 0;
+    padding: 0;
 }
 
-.all-btns {
-    display: flex;
+#container {
+    display: flex; 
+    max-height: 200px;
+    margin: 20px;
+    padding: 1px;
 }
-.number-btns {
+
+#numbers-container {
     display: flex;
     flex-wrap: wrap;
-    max-width: 75px;
+    max-width: 150px;
 }
 
-.operators {
+#operators-container {
     display: flex;
     flex-direction: column;
+}
+
+button {
+    width: 50px;
+    height: 50px;
+}
+
+#clear {
+    width: 100px;
+}
+
+#display {
+    width: 200px;
+    height: 40px;
+    margin-left: 20px;
+    margin-top: 10px;
 }
